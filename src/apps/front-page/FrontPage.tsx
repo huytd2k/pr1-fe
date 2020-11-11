@@ -1,15 +1,15 @@
 import {
   Box,
-  Container,
   createStyles,
-  Divider,
   makeStyles,
   Theme,
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import { Redirect } from "react-router";
+import { useMeQuery } from "../../graphql/graphql";
 import LoginForm from "../components/LoginForm";
-import NavBar from "../components/NavBar";
+import AppLayout from "../layout/AppLayout";
 export interface FrontPageProps {}
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,27 +18,26 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       padding: "30px",
     },
-    
+
     loginBox: {
       textAlign: "center",
       padding: "20px 200px",
     },
-
   })
 );
 
 function FrontPage({}: FrontPageProps) {
+  const {data, loading} = useMeQuery();
   const classes = useStyles();
+  if (data) return <Redirect to="/dashboard" ></Redirect>
+  if (loading) return <p>Loading...</p> 
   return (
-    <div>
-      <NavBar />
-      <Container className={classes.container} maxWidth="md">
-        <Typography variant="h2"> Welcome to HUSTshare</Typography>
-        <Box className={classes.loginBox}>
-          <LoginForm />
-        </Box>
-      </Container>
-    </div>
+    <AppLayout>
+      <Typography variant="h2"> Welcome to HUSTshare</Typography>
+      <Box className={classes.loginBox}>
+        <LoginForm />
+      </Box>
+    </AppLayout>
   );
 }
 

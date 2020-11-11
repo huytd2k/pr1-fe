@@ -1,7 +1,20 @@
-import { Button, Checkbox, FormControlLabel, Grid, Link, makeStyles, TextField } from "@material-ui/core";
-import React from "react";
+import {
+  Button,
+  Grid,
+  Link,
+  makeStyles,
+  Snackbar,
+  TextField
+} from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert/Alert";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import { useRegisterMutation } from "../../../graphql/graphql";
+import Cookies from 'js-cookie'
+import { Redirect } from "react-router";
 
 export interface RegisterFormProps {}
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -23,22 +36,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface FormValues {
+  username: string;
+  password: string;
+}
+
+const initialValues: FormValues = {
+  username: "",
+  password: "",
+};
+
 function RegisterForm({}: RegisterFormProps) {
+  const [registerMutation, { loading, data, error }] = useRegisterMutation();
+
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    setOpen(false);
+  };
+  const [open, setOpen] = useState(false);
+
   const classes = useStyles();
+
+  const handleSubmit = (values: FormValues) => {
+    registerMutation({
+      variables: {
+        user: values,
+      },
+    });
+  };
+
+  const formik = useFormik<FormValues>({
+    initialValues: initialValues,
+    onSubmit: handleSubmit,
+  });
+  
+  if(data) {
+  Cookies.set('token', data.register);
+  return <Redirect to="/dashboard" />
+  }
+
   return (
-    <form className={classes.form} noValidate>
+    <form onSubmit={formik.handleSubmit} className={classes.form}>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+        </Alert>
+      </Snackbar>
       <TextField
+        error={!!error}
+        value={formik.values.username}
+        onChange={formik.handleChange}
         variant="outlined"
         margin="normal"
         required
         fullWidth
-        id="email"
-        label="Email Address"
-        name="email"
+        id="username"
+        label="Username"
+        name="username"
         autoComplete="email"
         autoFocus
       />
       <TextField
+        onChange={formik.handleChange}
+        value={formik.values.password}
         variant="outlined"
         margin="normal"
         required
@@ -65,12 +123,12 @@ function RegisterForm({}: RegisterFormProps) {
         variant="contained"
         color="primary"
         className={classes.submit}
+        // onClick={(e) => e.preventDefault()}
       >
         Sign Up
       </Button>
       <Grid container>
-        <Grid item xs>
-        </Grid>
+        <Grid item xs></Grid>
         <Grid item>
           <Link href="/" variant="body2">
             {"Already had an account? Sign In"}
@@ -79,7 +137,6 @@ function RegisterForm({}: RegisterFormProps) {
       </Grid>
     </form>
   );
-  return <>RegisterForm</>;
 }
 
 export default RegisterForm;

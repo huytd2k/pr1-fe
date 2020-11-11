@@ -1,9 +1,13 @@
-import classes from '*.module.css';
-import { makeStyles, Theme, createStyles, Box, Container, Typography } from '@material-ui/core';
-import React from 'react';
-import LoginForm from '../components/LoginForm';
-import NavBar from '../components/NavBar';
-import RegisterForm from '../components/RegisterForm';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
+import React from "react";
+import RegisterForm from "../components/RegisterForm";
+import AppLayout from "../layout/AppLayout";
 
 export interface RegisterPageProps {}
 
@@ -13,27 +17,27 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       padding: "30px",
     },
-    
+
     loginBox: {
       textAlign: "center",
       padding: "20px 200px",
     },
-
   })
 );
 
-function RegisterPage({ }: RegisterPageProps) {
-    const classes = useStyles();
+function RegisterPage({}: RegisterPageProps) {
+  const classes = useStyles();
   return (
-    <div>
-      <NavBar />
-      <Container className={classes.container} maxWidth="md">
-        <Typography variant="h2"> Create your account <br /> at HUSTshare</Typography>
-        <Box className={classes.loginBox}>
-          <RegisterForm />
-        </Box>
-      </Container>
-    </div>);
-};
+    <AppLayout>
+      <Typography variant="h2">
+        {" "}
+        Create your account <br /> at HUSTshare
+      </Typography>
+      <Box className={classes.loginBox}>
+        <RegisterForm />
+      </Box>
+    </AppLayout>
+  );
+}
 
 export default RegisterPage;

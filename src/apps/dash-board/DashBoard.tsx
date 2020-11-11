@@ -9,7 +9,8 @@ import {
   Theme,
 } from "@material-ui/core";
 import React from "react";
-import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { useMeQuery } from "../../graphql/graphql";
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/NavBar";
 import UploadPanel from "../components/UploadPanel";
@@ -44,8 +45,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function DashBoard({}: DashBoardProps) {
+  const {data} = useMeQuery();
   let { path, url } = useRouteMatch();
   const classes = useStyles();
+  if (!data) return <Redirect to = "/" />
   return (
     <div className={classes.root}>
       <NavBar />
@@ -59,12 +62,12 @@ function DashBoard({}: DashBoardProps) {
         >
           <div className={classes.toolbar} />
           <List>
-              <Link to={`${path}/upload`}>
+              <Link style={{textDecoration: 'none'}} to={`${path}/upload`}>
                 <ListItem button key={`upload`}>
                   <ListItemText primary="Upload" />
                 </ListItem>
               </Link>
-              <Link to={`${path}/files`}>
+              <Link style={{textDecoration: 'none'}} to={`${path}/files`}>
                 <ListItem button key="files">
                   <ListItemText primary="Your Files" />
                 </ListItem>
