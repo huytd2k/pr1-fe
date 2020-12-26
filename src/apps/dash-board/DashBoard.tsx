@@ -1,8 +1,7 @@
 import {
   AppBar,
-
+  Button,
   Container,
-
   Divider,
   Drawer,
   IconButton,
@@ -21,37 +20,15 @@ import clsx from "clsx";
 import React, { useCallback } from "react";
 import { Redirect, Route, useHistory, useRouteMatch } from "react-router-dom";
 import { useMeQuery } from "../../graphql/graphql";
+import FilesPanel from "../components/FilesPanel";
 import UploadPanel from "../components/UploadPanel";
-
-
+import BackupIcon from '@material-ui/icons/Backup';
+import FolderIcon from '@material-ui/icons/Folder';
+import Cookies from "js-cookie";
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import logo from './logo.png'
 export interface DashBoardProps { }
 const drawerWidth = 240;
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       marginLeft: drawerWidth,
-//     },
-//     appBar: {
-//       width: `calc(100% - ${drawerWidth}px)`,
-//       marginLeft: drawerWidth,
-//     },
-//     drawer: {
-//       width: drawerWidth,
-//       flexShrink: 0,
-//       paddingRight: drawerWidth,
-//     },
-//     drawerPaper: {
-//       width: drawerWidth,
-//     },
-//     // necessary for content to be below app bar
-//     toolbar: theme.mixins.toolbar,
-//     content: {
-//       flexGrow: 1,
-//       backgroundColor: theme.palette.background.default,
-//       padding: theme.spacing(3),
-//     },
-//   })
-// );
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,11 +107,14 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+    logo: {
+      marginRight: "10px",
+    },
 }));
 // eslint-disable-next-line no-empty-pattern
 function DashBoard({ }: DashBoardProps) {
   const { data } = useMeQuery();
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
@@ -144,52 +124,18 @@ function DashBoard({ }: DashBoardProps) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const handleGoToUpload = useCallback( ( ) => {
+
+  const handleLogout = useCallback( () => {
+    Cookies.remove('token');
+    window.location.reload();
+  },[] )
+  const handleGoToUpload = useCallback(() => {
     history.push(`${path}/upload`);
-  },[history, path])
-  const handleGoToFiles = useCallback( ( ) => {
+  }, [history, path])
+  const handleGoToFiles = useCallback(() => {
     history.push(`${path}/files`);
-  },[history, path])
+  }, [history, path])
   if (!data) return <Redirect to="/" />
-  // return (
-  //   <div className={classes.root}>
-  //     <NavBar />
-  //       <Drawer
-  //         className={classes.drawer}
-  //         variant="permanent"
-  //         classes={{
-  //           paper: classes.drawerPaper,
-  //         }}
-  //         anchor="left"
-  //       >
-  //         <div className={classes.toolbar} />
-  //         <List>
-  //             <Link style={{textDecoration: 'none'}} to={`${path}/upload`}>
-  //               <ListItem button key={`upload`}>
-  //                 <ListItemText primary="Upload" />
-  //               </ListItem>
-  //             </Link>
-  //             <Link style={{textDecoration: 'none'}} to={`${path}/files`}>
-  //               <ListItem button key="files">
-  //                 <ListItemText primary="Your Files" />
-  //               </ListItem>
-  //             </Link>
-  //             {/* <Link to={`${path}/upload`}>
-  //               <ListItem button key={text}>
-  //                 <ListItemText primary={text} />
-  //               </ListItem>
-  //             </Link> */}
-  //         </List>
-  //       </Drawer>
-  //     <Switch>
-  //       <Route path={`${path}/upload`}>
-  //         <UploadPanel />
-  //       </Route>
-  //       <Route path={`${path}/files`}>
-  //         <FilesPanel />
-  //       </Route>
-  //     </Switch>
-  //   </div>
   return <div className={classes.root}>
     <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
       <Toolbar className={classes.toolbar}>
@@ -202,9 +148,16 @@ function DashBoard({ }: DashBoardProps) {
         >
           <MenuIcon />
         </IconButton>
+        <img className={classes.logo} height={30} width="auto" src={logo}></img>
         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
           Dashboard
       </Typography>
+      <Button color="inherit" onClick={handleLogout}>
+        <IconButton color='inherit'>
+          <ExitToAppOutlinedIcon />
+        </IconButton>
+        Logout
+      </Button>
         <IconButton color="inherit">
         </IconButton>
       </Toolbar>
@@ -231,23 +184,36 @@ function DashBoard({ }: DashBoardProps) {
         </ListItem>
         <ListItem button onClick={handleGoToUpload} >
           <ListItemIcon>
+            <BackupIcon />
           </ListItemIcon>
           <ListItemText primary="Uploads" />
         </ListItem>
         <ListItem button onClick={handleGoToFiles}>
           <ListItemIcon>
+            <FolderIcon />
           </ListItemIcon>
           <ListItemText primary="Files" />
         </ListItem>
       </List>
       <Divider />
+      <List>
+        <ListItem button onClick={handleLogout} >
+          <ListItemIcon>
+            <ExitToAppOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Log out" />
+        </ListItem>
+      </List>
     </Drawer>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
-      <Container maxWidth="lg" className={classes.container}>
-         <Route path={`${path}/upload`}>
-           <UploadPanel />
-         </Route>
+      <Container maxWidth="xl" className={classes.container}>
+        <Route path={`${path}/upload`}>
+          <UploadPanel />
+        </Route>
+        <Route path={`${path}/files`}>
+          <FilesPanel />
+        </Route>
       </Container>
     </main>
   </div>

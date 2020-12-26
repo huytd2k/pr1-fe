@@ -34,9 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export interface NavBarProps {}
+export interface NavBarProps {
+  children?: React.ReactNode;
+}
 
-function NavBar({}: NavBarProps) {
+function NavBar({children}: NavBarProps) {
   let history = useHistory();
   const classes = useStyles();
   const [authed, setAuthed] = React.useState(false);
@@ -66,6 +68,7 @@ function NavBar({}: NavBarProps) {
   return (
     <AppBar position="static">
       <Toolbar>
+        {children}
         <img className={classes.logo} height={30} width="auto" src={logo}></img>
         <Typography variant="h6" className={classes.title}>
           HUSTshare

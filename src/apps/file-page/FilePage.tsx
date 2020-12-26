@@ -1,3 +1,4 @@
+import { Table, TableCell, TableHead, TableRow } from "@material-ui/core";
 import React from "react";
 import { useParams } from "react-router";
 import { AppParams } from "../../common/types/params";

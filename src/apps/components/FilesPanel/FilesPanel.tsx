@@ -1,8 +1,8 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Box, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Theme } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useFilesQuery } from '../../../graphql/graphql';
 import FileCard from '../FileCard';
-export interface FilesPanelProps {}
+export interface FilesPanelProps { }
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -11,18 +11,37 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 function FilesPanel({ }: FilesPanelProps) {
     const classes = useStyles();
-    const {loading, data, error, refetch} = useFilesQuery();
+    const { loading, data, error, refetch } = useFilesQuery();
     useEffect(() => {
-        refetch()    
+        refetch()
     }, []);
-    {loading ?? <p>Loading...</p>}
+    { loading ?? <p>Loading...</p> }
     data && console.log(data);
 
     error && console.log(error);
     return <div className={classes.root}>
-    {loading ?? <p>Loading...</p>}
-        { data &&
-            data.findAllFile.map( (file) => <FileCard refetchCallback={refetch} file={file} />)
+        {loading ?? <p>Loading...</p>}
+        {data &&
+            <Box boxShadow={3}>
+                <Table size='small'>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>File name</TableCell>
+                            <TableCell>Size</TableCell>
+                            <TableCell>Uploaded At</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.findAllFile.map((file) => <TableRow>
+                            <TableCell> {file.originalName} </TableCell>
+                            <TableCell> {file.sizeInBytes} </TableCell>
+                            <TableCell> {file.createdAt} </TableCell>
+                            <TableCell> {file.filename} </TableCell>
+                        </TableRow>)}
+                    </TableBody>
+                </Table>
+            </Box>
         }
     </div>
 };
