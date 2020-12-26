@@ -47,15 +47,20 @@ function NavBar({children}: NavBarProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthed(event.target.checked);
   };
-
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(true);
     setAnchorEl(event.currentTarget);
   };
   
-  const handleClose = () => {
+  const handleClickAway = () => {
     setOpen(false);
     setAnchorEl(null);
+  };
+  
+  const handleGoToDashboard = () => {
+    setOpen(false);
+    setAnchorEl(null);
+    history.push('/dashboard');
   };
 
   const handleLogout = () => {
@@ -74,7 +79,7 @@ function NavBar({children}: NavBarProps) {
           HUSTshare
         </Typography>
         {data ? (
-          <ClickAwayListener onClickAway={handleClose}>
+          <ClickAwayListener onClickAway={handleClickAway}>
             <div>
               <IconButton
                 aria-label="account of current user"
@@ -99,10 +104,9 @@ function NavBar({children}: NavBarProps) {
                   horizontal: "right",
                 }}
                 open={open}
-                onClose={handleClose}
+                onClose={handleClickAway}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleGoToDashboard}>Dashboard</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>

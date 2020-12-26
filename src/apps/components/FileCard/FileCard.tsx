@@ -8,6 +8,8 @@ import {
   List,
   ListItem,
   makeStyles,
+  TableCell,
+  TableRow,
   TextField,
   Theme,
   Typography,
@@ -18,6 +20,11 @@ import { UploadFile, useDeleteMutation } from "../../../graphql/graphql";
 import FileDownload from "js-file-download";
 import { BitlyClient } from "bitly";
 import { Link } from "react-router-dom";
+import { IconButton } from "@material-ui/core";
+import GetAppIcon from '@material-ui/icons/GetApp';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ShareIcon from '@material-ui/icons/Share';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 const bitly = new BitlyClient("de0241b463e646fd27f92153ba0dc7e640cefe99", {});
 export interface FileCardProps {
   file: UploadFile;
@@ -74,42 +81,54 @@ function FileCard({ file, refetchCallback }: FileCardProps) {
   };
 
   return (
-    <div className={classes.root}>
-      <Card id={file.fileId}>
-        <Dialog onClose={handleCloseDialog} open={open}>
-          <List>
-            <ListItem>
-              Copy this link and share : {"   "}
-              <TextField
-                className={classes.linkField}
-                value={`hust.share/file/${file.fileId}`}
-              />
-            </ListItem>
-            <ListItem>
-              Or generate a shortened link
+    <TableRow>
+      <Dialog onClose={handleCloseDialog} open={open}>
+        <List>
+          <ListItem>
+            Copy this link and share : {"   "}
+            <TextField
+              className={classes.linkField}
+              value={`hust.share/file/${file.fileId}`}
+            />
+          </ListItem>
+          <ListItem>
+            Or generate a shortened link
               {loadedSLink ? (
-                <TextField className={classes.linkField} value={shortenLink} />
-              ) : (
+              <TextField className={classes.linkField} value={shortenLink} />
+            ) : (
                 <Button onClick={handleGenerateLink}> Generate</Button>
               )}
-            </ListItem>
-          </List>
-        </Dialog>
-        <CardContent>
-          <Link style={{textDecoration: 'none'}} to={`/file/${file.fileId}`}>
-            <Typography variant="h5" component="h2">
-              {file.originalName}
-            </Typography>
+          </ListItem>
+        </List>
+      </Dialog>
+      <TableCell>
+        <div style={{display: "flex", flexDirection: 'row'}}>
+        <AttachFileIcon style={{width: 20, marginRight: 10}} />
+          <Link style={{ textDecoration: 'none', color: 'black' }} to={`/file/${file.fileId}`}>
+      
+            {file.originalName}
           </Link>
-          <Typography variant="body2" component="p">
-            Size: {file.sizeInBytes} Bytes
-          </Typography>
-          <Button onClick={handleDownload}>Download</Button>
-          <Button onClick={handleDelete}>Delete</Button>
-          <Button onClick={handleClickShare}>Share</Button>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </TableCell>
+
+      <TableCell> {file.sizeInBytes} bytes</TableCell>
+      <TableCell> {new Date(file.createdAt).toLocaleDateString()} </TableCell>
+      <TableCell>
+        <IconButton onClick={handleDownload}><GetAppIcon /></IconButton>
+        <IconButton onClick={handleDelete}><DeleteIcon /></IconButton>
+        <IconButton onClick={handleClickShare}><ShareIcon /></IconButton>
+      </TableCell>
+    </TableRow>
+    // <div className={classes.root}>
+    //   <Card id={file.fileId}>
+    //     <CardContent>
+    //       </Link>
+    //       <Typography variant="body2" component="p">
+    //         Size: {file.sizeInBytes} Bytes
+    //       </Typography>
+    //     </CardContent>
+    //   </Card>
+    // </div>
   );
 }
 

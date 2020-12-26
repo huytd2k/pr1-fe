@@ -2,12 +2,12 @@ import { Button } from "@material-ui/core";
 import { DropzoneArea } from "material-ui-dropzone";
 import React, { useState } from "react";
 import {
-    useUploadFileMutation
+  useUploadFileMutation
 } from "../../../graphql/graphql";
 
-export interface UploadPanelProps {}
+export interface UploadPanelProps { }
 
-function UploadPanel({}: UploadPanelProps) {
+function UploadPanel({ }: UploadPanelProps) {
   const [key, setKey] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
   const [uploadMutation, { loading, error, data }] = useUploadFileMutation();
@@ -18,7 +18,7 @@ function UploadPanel({}: UploadPanelProps) {
       },
     });
     setFiles([]);
-    setKey(key+1);
+    setKey(key + 1);
   };
   data && console.log(data);
   error && console.log(error);
@@ -26,10 +26,12 @@ function UploadPanel({}: UploadPanelProps) {
   return (
     <div>
       <DropzoneArea key={key} filesLimit={1} onChange={handleFile} />
-      <Button disabled={!files.length || loading} onClick={handleUpload} variant="contained" color="primary">
-        {" "}
+      <div style={{ display: 'flex' }}>
+        <Button style={{ marginLeft: 'auto', width: 200, marginTop: 20}}disabled={!files.length || loading} onClick={handleUpload} variant="contained" color="primary">
+          {" "}
         Upload
       </Button>
+      </div>
     </div>
   );
 }

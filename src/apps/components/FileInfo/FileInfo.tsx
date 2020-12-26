@@ -1,8 +1,12 @@
 import {
-    Button,
+  Box,
+  Button,
   Card,
   CardContent,
   createStyles,
+  Divider,
+  List,
+  ListItem,
   makeStyles,
   Theme,
   Typography,
@@ -32,16 +36,29 @@ function FileInfo({ file }: FileInfoProps) {
     FileDownload(res.data, file.originalName);
   };
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h4">{file.filename}</Typography>
-        <InsertDriveFileIcon className={classes.fileLogo} />
-        <Typography>Uploaded by: {file.uploadedBy.username}</Typography>
-        <Typography>
-          Uploaded on: {new Date(file.createdAt).toLocaleDateString()}
-        </Typography>
-        <Typography>{`Size: ${file.sizeInBytes} bytes `}</Typography>
-        <Button onClick={handleDownload}>Download</Button>
+    <Card >
+      <CardContent >
+        <Typography variant="h4">{file.originalName}</Typography>
+        <InsertDriveFileIcon style={{marginTop: 20}} className={classes.fileLogo} />
+        <List>
+          <ListItem>
+            <Typography style={{margin: 'auto'}} align="center">Uploaded by: {file.uploadedBy.username}</Typography>
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <Typography style={{margin: 'auto'}} align="center">
+              Uploaded on: {new Date(file.createdAt).toLocaleDateString()}
+            </Typography>
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <Typography style={{margin: 'auto'}} align="center">{`Size: ${file.sizeInBytes} bytes `}</Typography>
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <Button fullWidth variant='contained' color='primary' onClick={handleDownload}>Download</Button>
+          </ListItem>
+        </List>
       </CardContent>
     </Card>
   );

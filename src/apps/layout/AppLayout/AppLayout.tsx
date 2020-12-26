@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function AppLayout({ children }: AppLayoutProps) {
   const classes = useStyles();
   return (
-    <div>
+    <div style={{backgroundColor: '#FAFAFA', height: '750px'}}>
       <NavBar />
       <Container className={classes.container} maxWidth="md">
         {children || <></>}
